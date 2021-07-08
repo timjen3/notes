@@ -1,4 +1,7 @@
+require 'set'
+
 FILE_NAME = "romeo-juliet.txt"
+IGNORED_WORDS = ['and', 'the', 'to', 'of', 'that', 'but', 'it', 'what', 'this', 'for', 'as', 'so', 'then', 'an'].to_set
 
 =begin
 	add this "run" function to notepad++ to run the current script with ruby:
@@ -30,7 +33,7 @@ FILE_NAME = "romeo-juliet.txt"
 def get_words_from_file(file_name)
 	begin
 		# read file          #lower   #regex-replace      #string split
-		File.read(file_name).downcase.gsub(/[^a-z]/, ' ').split(' ')
+		File.read(file_name).downcase.gsub(/[^a-z]/, ' ').split(' ').reject{|word| word.length === 1 or IGNORED_WORDS === word }
 	rescue Errno::ENOENT => e
 		puts "Could not find the specified file: " + file_name
 		exit
@@ -67,6 +70,10 @@ def count_occurrences2(word_counts, find_count)
 	}
 end
 
+def top_x(word_counts, x)
+	word_counts.sort_by {|word,count| count}.reverse.to_a[..x]
+end
+
 words = get_words_from_file(FILE_NAME)
 puts "Length is " + words.length.to_s
 puts "Distinct length is " + words.uniq.length.to_s
@@ -87,10 +94,11 @@ words.each {|x|
 count_occurrences(word_count, 'vile', 5)
 count_occurrences(word_count, 'knave', 5)
 count_occurrences(word_count, 'wherefore', 5)
-count_occurrences(word_count, 'be', 5)
+count_occurrences(word_count, 'love', 100)
 count_occurrences2(word_count, 42)
+top_x(word_count, 40).each{|word,count| puts "(#{count}) #{word}"}
 
 # perfor an action 3 times
-3.times {
-	puts "Yay!"
-}
+#3.times {
+#	puts "Yay!"
+#}
