@@ -4,6 +4,8 @@ FILE_NAME = "romeo-juliet.txt"
 IGNORED_WORDS = ['and', 'the', 'to', 'of', 'that', 'but', 'it', 'what', 'this', 'for', 'as', 'so', 'then', 'an'].to_set
 
 =begin
+	These notes follow along with the Tutorial by Paolo Perrotta called Ruby: Getting Started on Pluralsight.
+	You can get romeo and juliet here: https://shakespeare.folger.edu/download/
 	add this "run" function to notepad++ to run the current script with ruby:
 		cmd /k C:\Ruby27-x64\bin\ruby.exe "$(FULL_CURRENT_PATH)"
 	this begin/end area is a multi-line comment
