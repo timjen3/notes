@@ -29,6 +29,7 @@ IGNORED_WORDS = ['and', 'the', 'to', 'of', 'that', 'but', 'it', 'what', 'this', 
 			}
 	only false and nil will evaluate as false in a conditional
 	ruby is very forgiving, so there are a number of ways to do the same thing (ie: aliases)
+	regex cheat sheet: https://medium.com/@kristenfletcherwilde/cheat-sheet-for-regex-in-ruby-6f6360035545
 =end
 
 # read text
@@ -81,11 +82,11 @@ puts "Length is " + words.length.to_s
 puts "Distinct length is " + words.uniq.length.to_s
 
 # some array indexing
-first_word = words[0]
-last_word = words[-1]
-last_7_words = words[-7..-1]
-last_7_words2 = words[-7..]
-last_7_words_minus_1 = words[-7...]
+first_word = words[0]  # first
+last_word = words[-1]  # last
+last_7_words = words[-7..-2]  # from last 7 to last-minus-one
+last_7_words2 = words[-7..]  # from last 7 to end
+last_7_words_minus_1 = words[-7...]  # from last 7 to last-minus-one
 
 # some demo code
 word_count = {}
@@ -104,3 +105,4 @@ top_x(word_count, 40).each{|word,count| puts "(#{count}) #{word}"}
 #3.times {
 #	puts "Yay!"
 #}
+
