@@ -26,8 +26,25 @@ Master: houses kube-api-server which controls nodes in cluster; has etcd, contro
 
 Kubectl: management tool for clusters (`kubectl run`, `cubectl cluster-info`, `kubectl get nodes`)
 
-#### Pre-reqs to running Kubernetes on your machine:
-1. minikube: provides all the necessary components for running a kubernetes cluster. saves you from having to install all these components listed above manually.
-2. Virtualbox or some hypervisor
-3. kubectl command line tool
+### Starting first kubernetes cluster and testing system setup
 
+##### Pre-reqs to running Kubernetes on your machine:
+1. kubectl
+2. minikube
+3. Virtualbox or some hypervisor - this seems to be optional in newer versions
+
+##### After installation, try some things:
+* minikube start
+* kubectl get nodes
+* kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10
+* kubectl get deployments
+* kubectl expose deployment hello-minikube --type=NodePort --port=8080
+* minikube service hello-minikube --url
+
+You can then punch the url in your browser to access the service. You should see some application output (not a 404)
+
+Clean up the system like this:
+* kubectl delete services hello-minikube
+* kubectl delete deployment hello-minikube
+
+Done! You are set up with kubernetes!
