@@ -48,3 +48,33 @@ Clean up the system like this:
 * kubectl delete deployment hello-minikube
 
 Done! You are set up with kubernetes!
+
+#### pods
+* kubernetes doesn't deploy directly to nodes, it deploys to pods.
+* scaling works via adding or removing pods.
+* you can start up multiple containers within one pod and network them to one another, although this is a rare use case. usually you have one container per pod.
+
+Running a node creates a pod:
+`kubectl run nginx --image=nginx`
+`kubectl get pods`
+`kubectl get pods -o wide`
+`kubectl describe pod nginx`
+
+#### Managing Kubernetes with YAML files
+
+Yaml files are used for managing kubernetes files.
+
+#### pod-definition.yml
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+```
