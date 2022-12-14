@@ -24,7 +24,7 @@ Kubernetes components:
 Worker Node: houses container runtime (ex: docker) which runs the app; provides status and responds to commands from kube-apiserver via kubelet
 Master: houses kube-api-server which controls nodes in cluster; has etcd, controller, and scheduler as well
 
-Kubectl: management tool for clusters (`kubectl run`, `cubectl cluster-info`, `kubectl get nodes`)
+Kubectl: management tool for clusters (`kubectl run`, `kubectl cluster-info`, `kubectl get nodes`)
 
 ### Starting first kubernetes cluster and testing system setup
 
@@ -60,6 +60,12 @@ Running a node creates a pod:
 `kubectl get pods -o wide`
 `kubectl describe pod nginx`
 
+Quick way to get the yaml file equivalent of kubectl run:
+`kubectl run redis --image=redis123 --dry-run -o yaml`
+
+Change the image used by a pod:
+`kubectl set image pods/nginx nginx=redis`
+
 #### Managing Kubernetes with YAML files
 
 Yaml files are used for managing kubernetes files.
@@ -78,3 +84,94 @@ spec:
     - name: nginx-container
       image: nginx
 ```
+
+After making a change to a yaml file you can update a running pod like this:
+
+`kubectl apply -f redis.yaml`
+
+### IDE
+
+VS Code is a solid option for working with k8 yaml files. Install the kubernetes plugin for ease of use.
+
+Add a schema.json file to help vscode know which files will be for kubernetes.
+
+### Replication Controllers and ReplicaSets
+
+Allows you to run multiple pods for high availability. Alternatively, you can use the replication controller to build up a new pod when a pod fails. Ultimately the controller is ensuring the configured number of pods is running at once.
+
+Each replication controller can manage multiple pods.
+
+Replication Controllers are being replaced by ReplicaSets. There are minor differences in how each one works, but you should stick with Replica Sets.
+
+rc-definition.yml
+```
+apiVersion: v1
+kind: ReplicationController
+metadata:
+	name: myapp-rc
+	labels:
+		app: myapp
+		type: front-end
+spec:
+	template:
+		<insert everything from a pod yaml except apiVersion and kind>
+	replicas: 3
+```
+
+Create the pods with the replication controller:
+`kubectl create -f rc-definitions.yml`
+
+To view running pods:
+`kubectl get replicationcontroller`
+
+
+Here's how to do the same thing with a ReplicaSet:
+
+```
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+	name: myapp-replicaset
+	labels:
+		app: myapp
+		type: front-end
+spec:
+	template:
+		<insert everything from a pod yaml except apiVersion and kind>
+	replicas: 3
+	selector:
+		matchLabels:
+			type: front-end
+```
+
+The "selector" section helps identify additional pods to run. It offers a number of options for selecting pods to run.
+
+It's a bit unintuitive why the pod template has to be specified in addition to the selector. But the pod template is required.
+
+Working with ReplicaSet:
+```
+kubectl create -f replicaset.yaml
+kubectl get replicaset
+kubectl get pods  -- you can easily tell which pods are part of a replicaset
+kubectl delete replicaset myapp-replicaset
+kubectl replace -f replicaset.yaml  -- update from file
+```
+
+You can also scale it with a command, but it won't update the file so you'll want to do that too.
+
+`kubectl scale -replicas=6 -f replicaset-definition.yml`
+
+Try this exercise to see that the deleted pod is automatically reprovisioned by the replicaset:
+```
+kubectl create -f replicaset.yaml
+kubectl get pods  -- get the name of one of the created pods
+kubectl delete pod <podname>
+kubectl get pods  -- notice a new pod was already created to replace it
+```
+
+Note: if the number of pods exceeds the configured number k8 will automatically terminate the extra pod. even if you create the extra manually.
+
+You can edit a running ReplicaSet with this command. As soon as you save it the changes will be applied to the running replicaset:
+
+`kubectl edit replicaset myapp-replicaset`
+
