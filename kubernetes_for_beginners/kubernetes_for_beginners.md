@@ -175,3 +175,28 @@ You can edit a running ReplicaSet with this command. As soon as you save it the 
 
 `kubectl edit replicaset myapp-replicaset`
 
+
+# Deployments
+
+K8 keeps a history of deployments and allows you to rollback to previous versions easily.
+
+Strategy 1: RollingUpdate; default deployment strategy if nothing is specified; stands up a new deployment based on the updated definition and waits for it to be fully stood up before switching over to it, and standing down the old deployment; if the new deployment fails then traffic will be routed to the old pods indefinitely, until you fix and redeploy the change
+Strategy 2: Recreate; destroys deployments and recreate them
+
+commands:
+```
+kubectl create -f deployment-definition.yml
+kubectl get deployments
+kubectl apply -f deployment-definition.yml
+kubectl set image deployment/myapp-deployment nginx=nginx:1.9.1
+kubectl rollout status deployment/myapp-deployment --record
+kubectl rollout history deployment/myapp-deployment
+kubectl rollout undo deployment/myapp-d
+```
+
+Updates:
+
+Updates are done with the rollout command. K8 deploys one pod at a time and only considers the deployment successful if they are all deployed successfully.
+
+You can use `kubectl describe deployment myapp-deployment` to get info about the deployment. If you had used `--record` with rollout/edit of the deployment this will also tell you the command used to perform the rollout.
+
